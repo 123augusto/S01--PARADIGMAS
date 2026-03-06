@@ -1,0 +1,16 @@
+Dim senhaCorreta As integer
+Dim senhaDigitada As integer
+
+senhaCorreta = 1234
+
+print "DIGITE A SENHA:"
+input senhaDigitada
+
+While senhaDigitada <> senhaCorreta
+    Print "senha incorreta, tente novamente"
+    Input senhaDigitada
+
+Wend
+
+Print "acesso liberado"
+Sleep
