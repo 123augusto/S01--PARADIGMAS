@@ -1,0 +1,14 @@
+Dim reais As single
+Dim dolar As single
+Dim euro As single
+
+Print "--- CONVERSOR MULTIPLO ---"
+Input "VALOR EM REAIS (R$): ", reais
+
+dolar = reais / 5.00
+euro = reais / 5.40
+Print "VALOR ORIGINAL: R$ "; reais
+Print "VALOR EM DOLARES: US$ "; dolar
+Print "VALOR EM EUROS: EUR "; euro
+
+Sleep
