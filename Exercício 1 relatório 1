@@ -1,0 +1,30 @@
+Dim n1 As integer
+Dim n2 As integer
+Dim n3 As integer
+Dim p1 As integer
+Dim p2 As integer
+Dim p3 As integer
+Dim media As integer
+
+Print "CALCULADORA"
+
+Input "DIGITE A NOTA 1: ", n1
+Input "DIGITE O PESO DA NOTA 1: ", p1
+
+Input "DIGITE A NOTA 2: ", n2
+Input "DIGITE O PESO DA NOTA 2: ", p2
+
+Input "DIGITE A NOTA 3: ", n3
+Input "DIGITE O PESO DA NOTA 3: ", p3
+
+media = (n1 * p1 + n2 * p2 + n3 * p3) / (p1 + p2 + p3)
+
+Print "A MEDIA FINAL E: "; media
+
+If media > 70 Then
+    Print "Aprovado direto"
+Else
+    Print "Reprovado direto"
+End If
+
+Sleep
