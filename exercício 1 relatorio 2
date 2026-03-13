@@ -1,0 +1,25 @@
+local m
+local n
+local aux
+local x
+
+print("De dois numeros inteiros para o intervalo:")
+
+-- intervalo
+m = tonumber(io.read())
+n = tonumber(io.read())
+
+-- Logica para garantir que m seja o menor
+if m > n then
+    aux = m
+    m = n
+    n = aux
+end
+
+print("Sera a tabuada de qual numero?")
+x = tonumber(io.read())
+
+-- O loop for em Lua recebe: inicio, fim
+for i = m, n do
+    print(i .. " * " .. x .. " = " .. i * x)
+end
