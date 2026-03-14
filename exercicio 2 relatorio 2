@@ -1,0 +1,33 @@
+-- Funcao que percorre a tabela e retorna o maior valor
+local function encontrarMaior(t)
+    local maior = t[1] -- Assume que o primeiro e o maior
+    
+    for i = 2, #t do
+        if t[i] > maior then
+            maior = t[i] -- Atualiza se encontrar um valor maior
+        end
+    end
+    
+    return maior
+end
+
+-- Inicio do programa
+local n
+local tabela = {}
+
+print("Quantos numeros voce deseja inserir?")
+n = tonumber(io.read())
+
+-- Loop para preencher a tabela com N valores
+for i = 1, n do
+    print("Digite o valor " .. i .. ":")
+    tabela[i] = tonumber(io.read())
+end
+
+-- Verifica se a tabela nao esta vazia antes de chamar a funcao
+if n > 0 then
+    local resultado = encontrarMaior(tabela)
+    print("O maior valor encontrado é: " .. resultado)
+else
+    print("Nenhum valor foi inserido.")
+end
