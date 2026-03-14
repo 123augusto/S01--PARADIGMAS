@@ -1,0 +1,40 @@
+-- Funcao que recebe uma tabela e retorna uma nova apenas com impares
+local function filtrarImpares(t)
+    local impares = {}
+    
+    for i = 1, #t do
+        -- Verifica se o resto da divisao por 2 e diferente de 0
+        if t[i] % 2 ~= 0 then
+            -- Insere no final da nova tabela
+            table.insert(impares, t[i])
+        end
+    end
+    
+    return impares
+end
+
+-- Inicio do programa
+local n
+local tabelaOriginal = {}
+
+print("Quantos numeros deseja inserir?")
+n = tonumber(io.read())
+
+-- Leitura dos N valores
+for i = 1, n do
+    print("Digite o valor " .. i .. ":")
+    tabelaOriginal[i] = tonumber(io.read())
+end
+
+-- Chama a funcao para gerar a tabela de impares
+local tabelaImpares = filtrarImpares(tabelaOriginal)
+
+-- Exibicao do resultado
+print("--- Numeros Impares Encontrados ---")
+if #tabelaImpares == 0 then
+    print("Nenhum numero impar foi inserido.")
+else
+    for i = 1, #tabelaImpares do
+        print("Impar: " .. tabelaImpares[i])
+    end
+end
