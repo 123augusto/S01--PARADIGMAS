@@ -1,0 +1,50 @@
+use std::io;
+
+// Funcao que verifica se a senha atende aos criterios de seguranca
+fn verificar_senha(senha: &str) -> bool {
+    // Criterio 1: Pelo menos 10 caracteres de comprimento
+    let comprimento_ok = senha.len() >= 10;
+    
+    let mut cont_digitos = 0;
+    let mut tem_maiuscula = false;
+
+    // Itera sobre os caracteres da string
+    for c in senha.chars() {
+        // Criterio 2: Contar se e um digito
+        if c.is_digit(10) {
+            cont_digitos += 1;
+        }
+        // Criterio 3: Verificar se e maiuscula
+        if c.is_ascii_uppercase() {
+            tem_maiuscula = true;
+        }
+    }
+
+    // Retorna true se atender a todas as condicoes
+    comprimento_ok && cont_digitos >= 2 && tem_maiuscula
+}
+
+fn main() {
+    // Loop para continuar pedindo a senha ate ser valida
+    loop {
+        let mut senha = String::new();
+
+        println!("Digite uma senha:");
+        
+        // Lendo a entrada do usuario
+        io::stdin()
+            .read_line(&mut senha)
+            .expect("Erro ao ler");
+
+        // Remove espaços e quebra de linha do final
+        let senha_limpa = senha.trim();
+
+        // Verifica a senha usando a funcao criada
+        if verificar_senha(senha_limpa) {
+            println!("A senha é válida, seja bem vindo!");
+            break; // Sai do loop se for true
+        } else {
+            println!("Senha inválida! Requisitos: 10 caracteres, 2 números e 1 maiúscula.");
+        }
+    }
+}
