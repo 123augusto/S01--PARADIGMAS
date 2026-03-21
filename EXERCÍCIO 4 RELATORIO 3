@@ -1,0 +1,43 @@
+use std::io;
+
+// Funcao que calcula a media conforme as regras da disciplina
+fn calcular_media(nota1: f64, nota2: f64, nota3: f64) -> f64 {
+    // Calcula a media simples entre NP1 e NP2 para obter a NPT
+    let npt = (nota1 + nota2) / 2.0;
+    
+    // Calcula a media ponderada (70% NPT e 30% NPL)
+    let media_final = (npt * 0.7) + (nota3 * 0.3);
+    
+    println!("\nMedia NPT: {:.2}", npt);
+    println!("Media Final: {:.2}", media_final);
+
+    // Verifica se ambas as notas (NPT e NPL) atingiram o criterio
+    if npt >= 60.0 && nota3 >= 60.0 {
+        println!("Parabéns! Você foi aprovado e desejamos felicitações!");
+    } else {
+        println!("Infelizmente você foi reprovado nesta disciplina.");
+    }
+
+    media_final
+}
+
+fn main() {
+    let mut input1 = String::new();
+    let mut input2 = String::new();
+    let mut input3 = String::new();
+
+    println!("Digite a nota NP1:");
+    io::stdin().read_line(&mut input1).expect("Erro ao ler");
+    let np1: f64 = input1.trim().parse().unwrap_or(0.0);
+
+    println!("Digite a nota NP2:");
+    io::stdin().read_line(&mut input2).expect("Erro ao ler");
+    let np2: f64 = input2.trim().parse().unwrap_or(0.0);
+
+    println!("Digite a nota NPL:");
+    io::stdin().read_line(&mut input3).expect("Erro ao ler");
+    let npl: f64 = input3.trim().parse().unwrap_or(0.0);
+
+    // Chama a funcao de calculo
+    calcular_media(np1, np2, npl);
+}
