@@ -1,0 +1,52 @@
+use std::io;
+
+// Funcao que verifica se o numero e impar
+fn eh_impar(numero: i32) -> bool {
+    numero % 2 != 0
+}
+
+fn main() {
+    // 1. Escolha do Jogador 1 (Par ou Impar)
+    println!("Jogador 1, escolha 'par' ou 'impar':");
+    let mut escolha_j1 = String::new();
+    io::stdin()
+        .read_line(&mut escolha_j1)
+        .expect("Erro ao ler escolha");
+    let escolha_j1 = escolha_j1.trim().to_lowercase();
+
+    // 2. Numero do Jogador 1
+    println!("Jogador 1, digite seu numero:");
+    let mut num1_str = String::new();
+    io::stdin()
+        .read_line(&mut num1_str)
+        .expect("Erro ao ler numero do Jogador 1");
+    let num1: i32 = num1_str.trim().parse().unwrap_or(0);
+
+    // 3. Numero do Jogador 2
+    println!("Jogador 2, digite seu numero:");
+    let mut num2_str = String::new();
+    io::stdin()
+        .read_line(&mut num2_str)
+        .expect("Erro ao ler numero do Jogador 2");
+    let num2: i32 = num2_str.trim().parse().unwrap_or(0);
+
+    // 4. Calculo da soma
+    let soma = num1 + num2;
+    let resultado_impar = eh_impar(soma);
+
+    // 5. Determinacao do vencedor
+    println!("\n--- RESULTADO ---");
+    println!("A soma dos numeros e: {}", soma);
+
+    let ganhou_j1 = if escolha_j1 == "par" {
+        !resultado_impar // Ganha se a soma for par (nao impar)
+    } else {
+        resultado_impar  // Ganha se a soma for impar
+    };
+
+    if ganhou_j1 {
+        println!("O Jogador 1 venceu!");
+    } else {
+        println!("O Jogador 2 venceu!");
+    }
+}
