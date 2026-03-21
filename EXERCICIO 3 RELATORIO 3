@@ -1,1 +1,37 @@
+use std::io;
 
+// Funcao que imprime os numeros no intervalo que sao divisiveis pelo numero base
+fn imprimir_multiplos(numero: i32, limite_inferior: i32, limite_superior: i32) {
+    println!("\nMultiplos de {} entre {} e {}:", numero, limite_inferior, limite_superior);
+    
+    // O operador '..=' cria um intervalo inclusivo
+    for i in limite_inferior..=limite_superior {
+        if i % numero == 0 {
+            println!("{}", i);
+        }
+    }
+}
+
+fn main() {
+    let mut input_numero = String::new();
+    let mut input_inferior = String::new();
+    let mut input_superior = String::new();
+
+    // Leitura do numero da tabuada
+    println!("Digite o numero da tabuada:");
+    io::stdin().read_line(&mut input_numero).expect("Erro ao ler");
+    let numero: i32 = input_numero.trim().parse().unwrap_or(0);
+
+    // Leitura do limite inferior
+    println!("Digite o limite inferior:");
+    io::stdin().read_line(&mut input_inferior).expect("Erro ao ler");
+    let inferior: i32 = input_inferior.trim().parse().unwrap_or(0);
+
+    // Leitura do limite superior
+    println!("Digite o limite superior:");
+    io::stdin().read_line(&mut input_superior).expect("Erro ao ler");
+    let superior: i32 = input_superior.trim().parse().unwrap_or(0);
+
+    // Chamada da funcao com os valores fornecidos
+    imprimir_multiplos(numero, inferior, superior);
+}
