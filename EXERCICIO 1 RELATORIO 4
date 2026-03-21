@@ -1,0 +1,30 @@
+package main
+
+import "fmt"
+
+// ValidarUsuario verifica se o nome tem pelo menos 8 caracteres
+func ValidarUsuario(nome string) (bool, string) {
+	if len(nome) >= 8 {
+		return true, "Usuário criado com sucesso!"
+	}
+	return false, "Erro: O nome de usuário é muito curto"
+}
+
+func main() {
+	var usuario string
+	var valido bool
+	var mensagem string
+
+	// Loop que continua ate que a validacao seja verdadeira
+	for {
+		fmt.Print("Digite o nome de usuário (mínimo 8 caracteres): ")
+		fmt.Scanln(&usuario)
+
+		valido, mensagem = ValidarUsuario(usuario)
+		fmt.Println(mensagem)
+
+		if valido {
+			break
+		}
+	}
+}
