@@ -1,0 +1,24 @@
+(defstruct loc nome elem dif rec)   ; elem: :pyro :hydro :cryo :electro :anemo
+
+(defun belem (l)   ; bonus por elemento
+  (cond ((or (eq (loc-elem l) :pyro) (eq (loc-elem l) :electro)) (* (loc-rec l) 1.2))
+    ((eq (loc-elem l) :cryo) (* (loc-rec l) 1))
+        (t (loc-rec l))))
+
+(defun vale (l)
+  (and (> (loc-rec l) 499) (<= (loc-dif l) 3)))
+
+(defun rota (xs)
+ (mapcar (lambda (l) (format nil "~a - Recompensa: ~,2f" (loc-nome l) (belem l)))
+   (remove-if-not #'vale xs)))
+
+(defun m4 ()
+  (let ( (cat (list
+      (make-loc :nome "Domínio do Sol" :elem :pyro :dif 2 :rec 460.0)
+      (make-loc :nome "Lago Eterno" :elem :hydro :dif 1 :rec 600.0)
+      (make-loc :nome "Pico Gelado" :elem :cryo :dif 4 :rec 520.0)
+       (make-loc :nome "Ruínas Trovejantes" :elem :electro :dif 5 :rec 700.0)
+       (make-loc :nome "Floresta do Vento" :elem :anemo :dif 2 :rec 300.0))))
+   (dolist (l cat) (format t "~a: ~,2f~%" (loc-nome l) (belem l)))
+   (format t "--- rota ---~%")
+    (dolist (s (rota cat)) (format t "~a~%" s))))
