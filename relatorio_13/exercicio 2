@@ -1,0 +1,23 @@
+(defstruct bicho nome amb peri vida)   ; peri: :baixa :media :alta
+
+(defun perigosos (xs)   ; nao baixa
+  (remove-if-not (lambda (b) (not (eq (bicho-peri b) :baixa))) xs))
+
+(defun prof (xs)   ; so Deep + map
+ (mapcar (lambda (b) (format nil "~a: Vive em ~a" (bicho-nome b) (bicho-amb b)))
+   (remove-if-not (lambda (b) (string= (bicho-amb b) "Deep")) xs)))
+
+(defun desc2 (b)
+  (format nil "~a | ~a | ~a" (bicho-nome b) (bicho-amb b) (bicho-peri b)))
+
+(defun m2 ()
+  (let ((cat (list
+       (make-bicho :nome "Peeper" :amb "Safe Shallows" :peri :baixa :vida 5)
+        (make-bicho :nome "Reaper Leviathan" :amb "Dunes" :peri :alta :vida 40)
+      (make-bicho :nome "Ghost Leviathan" :amb "Deep" :peri :alta :vida 60)
+         (make-bicho :nome "Crabsquid" :amb "Deep" :peri :media :vida 20))))
+   (dolist (b cat) (format t "~a~%" (desc2 b)))
+   (format t "--- perigosos ---~%")
+    (dolist (b (perigosos cat)) (format t "~a~%" (desc2 b)))
+   (format t "--- deep ---~%")
+      (dolist (s (prof cat)) (format t "~a~%" s))))
