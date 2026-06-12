@@ -1,0 +1,23 @@
+(defstruct erva nome pb)
+
+(defun dose (peso idade)   ; guards
+ (cond ((or (< idade 12) (< peso 20)) "10ml")
+    ((< peso 60) "25ml")
+      (t "50ml")))
+
+(defun preco (e)   ; por nome
+  (cond ((string= (erva-nome e) "Ginseng") (* (erva-pb e) 3.0))
+   ((string= (erva-nome e) "Lotus") (* (erva-pb e) 1.5))
+        (t (erva-pb e))))
+
+(defun desc1 (e peso idade)
+  (format nil "~a custa ~,2f e a dosagem é ~a"
+       (erva-nome e) (preco e) (dose peso idade)))
+
+(defun m1 ()
+ (let ((g (make-erva :nome "Ginseng" :pb 10.0))
+     (l (make-erva :nome "Lotus" :pb 8.0))
+       (c (make-erva :nome "Camomila" :pb 5.0)))
+   (format t "~a~%" (desc1 g 15.0 8))
+  (format t "~a~%" (desc1 l 45.0 30))
+     (format t "~a~%" (desc1 c 80.0 40))))
