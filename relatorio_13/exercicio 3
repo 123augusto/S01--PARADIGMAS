@@ -1,0 +1,27 @@
+(defstruct item nome tipo preco fm)   ; tipo: :arma :pocao :artefato
+
+(defun imposto (p) (* p 1.15))
+
+(defun mald (f)   ; guard
+  (cond ((> f 80) (* f 1.5))
+     (t f)))
+
+(defun venda (i)
+  (format nil "~a | ~,2f | ~,2f" (item-nome i) (item-preco i) (item-fm i)))
+
+(defun proc (xs)   ; arma -> imposto e bonus
+ (mapcar #'venda
+  (mapcar (lambda (i)
+        (make-item :nome (item-nome i) :tipo (item-tipo i)
+            :preco (imposto (item-preco i))
+              :fm (mald (item-fm i))))
+    (remove-if-not (lambda (i) (eq (item-tipo i) :arma)) xs))))
+
+(defun m3 ()
+  (let ((cat (list
+      (make-item :nome "Espada do Caos" :tipo :arma :preco 100.0 :fm 90)
+       (make-item :nome "Adaga Sombria" :tipo :arma :preco 60.0 :fm 50)
+         (make-item :nome "Poção de Cura" :tipo :pocao :preco 30.0 :fm 10)
+      (make-item :nome "Amuleto Antigo" :tipo :artefato :preco 200.0 :fm 75)
+        (make-item :nome "Machado Rúnico" :tipo :arma :preco 150.0 :fm 85))))
+   (dolist (s (proc cat)) (format t "~a~%" s))))
