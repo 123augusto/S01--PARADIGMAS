@@ -1,0 +1,38 @@
+% EX 1
+%  sucuri alimentada pela agua e pela terra
+alimenta(agua, sucuri).
+alimenta(terra, sucuri).
+
+% come agua OU terra E tem nicho de rio/pantano/profundezas
+especie_chave(A) :-
+    ( alimenta(agua, A) ; alimenta(terra, A) ),
+    ( nicho(A, rios) ; nicho(pantano, A) ; nicho(A, profundezas) ).
+% Query: especie_chave(X).      % -> sucuri
+
+
+% Ex 2
+% 2 nichos diff E vive nas margens (\= pros nichos n serem o msm)
+especie_dominante(A) :-
+    nicho(A, X),
+    nicho(A, Y),
+    X \= Y,
+    local_comum(A, margens).
+% Query: especie_dominante(X).  % -> jacare
+
+
+% Ex 3
+% os dois comem sol E os dois comem terra 
+competidores_diretos(A, B) :-
+    alimenta(sol, A), alimenta(terra, A),
+    alimenta(sol, B), alimenta(terra, B).
+% Query: competidores_diretos(A, B).
+
+
+% ex 4
+% cadeia alimentar estendida
+fluxo_energia(A, D) :-
+    alimenta(A, D).                 %  A alimenta D direto
+fluxo_energia(A, D) :-
+    alimenta(A, Z),                 % A -> Z -> ... -> D
+    fluxo_energia(Z, D).
+% Query: fluxo_energia(sol, X).
