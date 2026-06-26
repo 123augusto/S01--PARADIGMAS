@@ -1,0 +1,37 @@
+% Ex1 
+peca_critica(P) :-
+ componente(P, E, _), E > 5,
+ precisa(P1, P), precisa(P2, P), P1 \= P2.   % exigido por 2 diff
+
+
+% Ex2
+% hangar com 2 pecas de combate
+hangar_combate(H) :-
+    possui(H, A), componente(A, _, combate),
+    possui(H, B), componente(B, _, combate), A \= B.
+
+% hangar sem nenhuma peça de propulsao
+falta_energia(H) :-
+possui(H, _),
+\+ ( possui(H, P), componente(P, _, propulsao) ).
+%    -> vazio. nenhum hangar tem 2 pecas de combate 
+
+
+% Ex3
+% peca exigida por algum componente q o hangar n tem
+item_faltante(H, Peca) :-
+   precisa(_, Peca),
+   possui(H, _), \+ possui(H, Peca).
+
+% n e fundamental E o hangar tem TODOS os requisitos diretos
+pode_montar(H, C) :-
+    componente(C, _, Cat), Cat \= fundamental,
+    \+ ( precisa(C, Req), \+ possui(H, Req) ).
+
+
+
+% ex4
+peca_raiz(P)  :- componente(P, _, _), \+ precisa(P, _).   % n precisa de nada
+peca_final(P) :- componente(P, _, _), \+ precisa(_, P).   % ninguem precisa dele
+% peca_raiz(P), \+ componente(P, _, propulsao).
+%    -> reator_fusao, modulo_suporte_vida, cloaking_device
