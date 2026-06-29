@@ -1,0 +1,418 @@
+[IA_REPORT.md]
+# Relatorio de Uso de IA Generativa
+## Programacao Funcional com Haskell
+
+Aluno: Augusto Leite
+Matricula: 866
+Instituicao: Inatel
+
+---
+
+## 1. Introducao
+
+Esse relatorio e sobre o que eu, Augusto Leite (mat. 866), aprendi na aula de Programacao Funcional com Haskell no Inatel. O material que a gente usou foi a apresentacao "PF com Haskell" do professor Pedro Henrique Ribeiro Dias.
+
+Pra entender os exercicios 1 a 4, eu fui tirando duvidas com o modelo de IA Claude (claude-sonnet-4-20250514). Eu cheguei nas perguntas errando coisas basicas e confundindo com Python que e o que eu ja sabia antes.
+
+O doc tem o prompt que eu mandei, a resposta que o modelo deu, e o que eu achei de cada interacao.
+
+---
+
+## 2. Historico de Prompts e Respostas Obtidas
+
+---
+
+### 2.1 Prompt 1 - Tipos Personalizados com data
+
+Modelo: claude-sonnet-4-20250514
+Tema: criar tipos proprios com data e construtores de dados
+
+#### Prompt que eu mandei
+
+oi! to tentando criar um tipo Bebida em Haskell mas nao entendo a diferenca entre data e uma variavel normal. fiz assim:
+
+```haskell
+bebida = "Cafe"
+tipo = "Quente"
+preco = 5.0
+```
+
+mas era pra usar data. o que e isso? por que nao posso usar so variaveis normais igual faço em Python? e o que sao esses "construtores" ? pode me explicar como fazer um tipo Bebida com os campos nome, tipo e preco?
+
+#### Resposta obtida
+
+Ótima pergunta! Em Haskell, variáveis isoladas como as que você escreveu funcionam apenas para valores únicos e independentes — elas não ficam agrupadas nem mantêm qualquer relação entre si. O `data` existe justamente para criar um novo tipo que reúne vários campos em uma única estrutura coesa, de forma parecida com uma classe em Python, porém sem métodos e completamente imutável.
+
+O chamado "construtor de dados" é, essencialmente, o nome que você utiliza para criar um valor desse tipo. Observe a diferença:
+
+```haskell
+-- seu codigo (variaveis soltas, sem relacao)
+bebida = "Cafe"
+tipo   = "Quente"
+preco  = 5.0
+
+-- do jeito certo com data
+data Bebida = Bebida
+  { nome  :: String
+  , tipo  :: String
+  , preco :: Double
+  }
+```
+
+O primeiro `Bebida` (à direita do `=`) é o construtor — é por meio dele que você cria um valor:
+
+```haskell
+minhaBebida :: Bebida
+minhaBebida = Bebida { nome = "Cafe", tipo = "Quente", preco = 5.0 }
+```
+
+Em Python, você raciocinaria em termos de objeto: `obj = Bebida("Cafe", "Quente", 5.0)`. A ideia aqui é a mesma, mas sem estado mutável. Uma vez criado, o valor não pode ter seu `preco` alterado; caso precise de um valor diferente, você cria uma nova `Bebida`.
+
+#### O que eu achei
+
+Como ajudou: foi direto ao ponto mostrando o contraste entre variaveis soltas e o data, ai ficou facil entender por que variaveis soltas nao funcionam pra representar uma estrutura com varios campos juntos.
+
+Solucionou a duvida: sim. A analogia com classe do Python foi o que clicou pra mim, criei uma ponte entre o que eu ja sabia e o conceito novo.
+
+O que aprendi: aprendi que data define tanto o tipo (Bebida) quanto o construtor (tambem chamado Bebida), e que os campos com :: definem o tipo de cada campo. Usei isso no ex. 1 pra criar Bebida, StatusPedido e Pedido, e repeti o mesmo esquema nos ex. 2, 3 e 4.
+
+---
+
+### 2.2 Prompt 2 - Multiplos Construtores
+
+Modelo: claude-sonnet-4-20250514
+Tema: tipo soma com | e construtores sem campos
+
+#### Prompt que eu mandei
+
+entendi como criar a Bebida mas agora preciso fazer um StatusPedido com Aberto, Entregue e Cancelado. tentei assim:
+
+```haskell
+data StatusPedido = String
+```
+
+achei que ia funcionar pq status e uma string tipo "Aberto" ou "Cancelado". mas deu erro. por que nao posso usar String direto? como faz pra ter esse tipo com essas tres opcoes?
+
+#### Resposta obtida
+
+O erro é compreensível. Ao escrever `data StatusPedido = String`, você está dizendo que `StatusPedido` é apenas um sinônimo de `String` — e, com isso, qualquer `String` passaria a ser um `StatusPedido` válido, inclusive valores como `"Aberto123"` ou `"qualquercoisa"`. O Haskell oferece a palavra-chave `type` para criar sinônimos, mas não é disso que você precisa neste caso.
+
+O que você precisa é de um tipo soma: um tipo que pode assumir uma alternativa OU outra OU outra. Cada alternativa é um construtor sem campos:
+
+```haskell
+data StatusPedido = Aberto | Entregue | Cancelado
+```
+
+O operador `|` significa "ou". Dessa forma, `StatusPedido` só pode assumir exatamente esses três valores, e o compilador rejeita qualquer outro. Isso é consideravelmente mais seguro do que usar `String`, pois com `String` um erro de digitação como `"Canceladoo"` seria aceito normalmente pelo programa.
+
+Para utilizá-lo:
+
+```haskell
+meuStatus :: StatusPedido
+meuStatus = Cancelado   -- sem aspas! e um construtor, nao uma string
+
+-- em pattern matching:
+verificaStatus :: StatusPedido -> String
+verificaStatus Aberto    = "Pedido em aberto"
+verificaStatus Entregue  = "Ja entregue"
+verificaStatus Cancelado = "Foi cancelado"
+```
+
+No pattern matching, o construtor é escrito diretamente, sem aspas.
+
+#### O que eu achei
+
+Como ajudou: o | como "ou" ficou bem claro. O exemplo do "Canceladoo" sendo aceito se fosse String mostrou na pratica por que o sistema de tipos do Haskell e mais seguro.
+
+Solucionou a duvida: sim. Entendi que construtores sem campos sao valores concretos e nao precisam de parenteses nem argumentos quando usados.
+
+O que aprendi: aprendi a diferenca entre tipo produto (campos com valores) e tipo soma (alternativas com |). Esse padrao aparece direto nos 4 exercicios - StatusPedido, StatusCompra, StatusEvento e StatusAtendimento.
+
+---
+
+### 2.3 Prompt 3 - Pattern Matching em Listas
+
+Modelo: claude-sonnet-4-20250514
+Tema: pattern matching com [] e (x:xs) em listas
+
+#### Prompt que eu mandei
+
+agora preciso implementar a funcao primeiraBebida que pega o nome da primeira bebida de um pedido. tentei assim:
+
+```haskell
+primeiraBebida :: Pedido -> String
+primeiraBebida pedido = nome (bebidas pedido !! 0)
+```
+
+funciona quando a lista tem elemento, mas quando ta vazia o programa crasha feio. o professor falou pra usar "pattern matching na lista". o que e isso? como faz sem usar !! pra nao crashar?
+
+#### Resposta obtida
+
+Boa observação. O operador `!!` é arriscado precisamente por esse motivo: ele lança um erro em tempo de execução quando a lista está vazia. Em Haskell funcional puro, a abordagem recomendada é descrever o formato esperado da lista por meio de pattern matching, o que faz o compilador exigir o tratamento de todos os casos possíveis.
+
+Os padrões de lista mais comuns são:
+- `[]` corresponde à lista vazia
+- `(x:xs)`, em que `x` é o primeiro elemento e `xs` é o restante
+- `(x:_)`, quando apenas o primeiro elemento interessa e o restante pode ser ignorado com `_`
+
+Aplicando à sua função:
+
+```haskell
+primeiraBebida :: Pedido -> String
+primeiraBebida pedido =
+  case bebidas pedido of
+    []    -> "Nenhuma bebida no pedido"
+    (b:_) -> nome b
+```
+
+O `case ... of` avalia a lista e corresponde ao primeiro padrão compatível. Se a lista estiver vazia, retorna a mensagem; se houver ao menos um elemento (`b`), esse elemento é utilizado em `nome b`, enquanto o `_` descarta o restante sem sequer nomeá-lo.
+
+Também é possível escrever a função com múltiplas equações:
+
+```haskell
+primeiraBebida :: Pedido -> String
+primeiraBebida (Pedido [] _)    = "Nenhuma bebida no pedido"
+primeiraBebida (Pedido (b:_) _) = nome b
+```
+
+Essa segunda forma desestrutura o `Pedido` diretamente na assinatura da função, sendo mais idiomática em Haskell.
+
+#### O que eu achei
+
+Como ajudou: ver os dois estilos (case...of e multiplas equacoes) foi muito util. O (b:_) ficou claro quando explicado como "pelo menos um elemento b, ignora o resto".
+
+Solucionou a duvida: sim. O crash com !! sumiu e entendi por que pattern matching e a forma segura de fazer isso.
+
+O que aprendi: o _ em pattern matching e um wildcard que ignora o que nao interessa. Usei (b:_) no ex. 1 (primeiraBebida), no ex. 4 (primeiroServico), e last com pattern matching no ex. 3 (bandaEncerramento).
+
+---
+
+### 2.4 Prompt 4 - Guards
+
+Modelo: claude-sonnet-4-20250514
+Tema: guards com |, otherwise e where
+
+#### Prompt que eu mandei
+
+preciso implementar o valorTotalPedido que retorna 0.0 se o pedido tiver Cancelado e o total nos outros casos. fiz com if/else normal:
+
+```haskell
+valorTotalPedido :: Pedido -> Double
+valorTotalPedido p =
+  if status p == Cancelado
+    then 0.0
+    else sum (map preco (bebidas p))
+```
+
+ta funcionando, mas é pra usar guards. o que é guard e por que seria melhor? como ficaria o codigo?
+
+#### Resposta obtida
+
+Seu código com `if/else` funciona, mas guards tornam o código significativamente mais legível quando há múltiplas condições — cada caso ocupa uma linha separada iniciada por `|`, assemelhando-se mais a uma especificação matemática do que a código imperativo.
+
+A sintaxe básica de guards é:
+
+```haskell
+nomeDaFuncao argumento
+  | condicao1 = resultado1
+  | condicao2 = resultado2
+  | otherwise = resultadoPadrao
+```
+
+O `otherwise` funciona como um `else` final que sempre corresponde. Aplicando ao seu caso:
+
+```haskell
+valorTotalPedido :: Pedido -> Double
+valorTotalPedido p
+  | status p == Cancelado = 0.0
+  | otherwise             = sum (map preco (bebidas p))
+```
+
+A vantagem fica mais evidente quando há mais casos. No Exercício 2, em que existe desconto acima de 200:
+
+```haskell
+valorFinal :: Compra -> Double
+valorFinal c
+  | statusCompra c == Cancelada = 0.0
+  | total > 200                 = total * 0.9
+  | otherwise                   = total
+  where total = sum (map preco (itens c))
+```
+
+Observe o `where` ao final: ele define `total` uma única vez e o reutiliza nas guards, evitando repetir a expressão. Trata-se de uma boa prática em Haskell.
+
+#### O que eu achei
+
+Como ajudou: alem da sintaxe, a resposta mostrou por que guards sao melhores com varios casos. O exemplo adiantando o ex. 2 com desconto foi otimo, ajudou a preparar dois exercicios de uma vez.
+
+Solucionou a duvida: sim. O where pra definir total e reutilizar nas condicoes foi um aprendizado extra que nao estava na pergunta original mas economizou tempo nos exercicios seguintes.
+
+O que aprendi: aprendi guards com | e otherwise, e o where como escopo local pra evitar repeticao. Usei guards nos 4 exercicios e where nos ex. 2, 3 e 4.
+
+---
+
+### 2.5 Prompt 5 - map e sum
+
+Modelo: claude-sonnet-4-20250514
+Tema: funcoes de alta ordem map, sum e composicao com .
+
+#### Prompt que eu mandei
+
+no exercicio 2 precisa implementar totalItens usando map e sum. tentei assim mas nao compila:
+
+```haskell
+totalItens :: [Item] -> Double
+totalItens lista = sum(lista.preco)
+```
+
+acho que to confundindo com Python. como faz pra pegar o preco de cada Item da lista e somar tudo usando map e sum igual pede o exercicio?
+
+#### Resposta obtida
+
+Esse é um equívoco bastante comum entre quem vem do Python. Em Haskell não existe notação de ponto para acessar campos a partir de uma lista — `lista.preco` não tem significado nesse contexto. Campos como `preco` são, na verdade, funções, e você os aplica por meio de `map`.
+
+Pense da seguinte forma: `map` recebe uma função e uma lista, aplica a função a cada elemento e devolve uma nova lista; `sum` recebe uma lista de números e retorna a soma de todos eles.
+
+```haskell
+-- map preco lista  ->  extrai o preco de cada Item, gerando [Double]
+-- sum [...]         ->  soma todos os Doubles
+
+totalItens :: [Item] -> Double
+totalItens lista = sum (map preco lista)
+```
+
+Para visualizar o que ocorre internamente:
+
+```haskell
+-- suponha: lista = [Item "Espada" "Arma" 150.0, Item "Escudo" "Defesa" 80.0]
+-- map preco lista -> [150.0, 80.0]
+-- sum [150.0, 80.0] -> 230.0
+```
+
+Também é possível escrever de forma mais concisa utilizando composição de funções:
+
+```haskell
+totalItens :: [Item] -> Double
+totalItens = sum . map preco
+```
+
+O `.` é o operador de composição e lê-se "sum após map preco". Ambas as formas são válidas.
+
+#### O que eu achei
+
+Como ajudou: a visualizacao do que acontece internamente (a lista intermediaria [150.0, 80.0]) foi o que fixou o conceito de verdade. Ver o dado fluindo pela pipeline tornou map e sum concretos.
+
+Solucionou a duvida: sim. Descobri que campos de data em Haskell sao funcoes normais, o que explica por que map preco funciona sem nenhuma sintaxe especial.
+
+O que aprendi: acessores de campo sao funcoes comuns em Haskell, map produz uma lista nova sem modificar a original, e sum . map preco e a forma composta equivalente. Usei sum (map preco ...) nos 4 exercicios pra calcular os totais.
+
+---
+
+### 2.6 Prompt 6 - IO e main
+
+Modelo: claude-sonnet-4-20250514
+Tema: IO, do, putStrLn, print, show e ++
+
+#### Prompt que eu mandei
+
+fiz todas as funcoes mas agora na main nao sei como mostrar as coisas na tela. tentei:
+
+```haskell
+main =
+  print valorTotalPedido pedido1
+  print valorTotalPedido pedido2
+```
+
+deu erro. como funciona o IO em Haskell? por que nao posso so chamar as funcoes assim? e como mostro uma String com texto e o valor numerico junto, tipo "Total: 35.0"?
+
+#### Resposta obtida
+
+Esse erro ocorre porque, em Haskell, a `main` precisa ser uma ação `IO ()`. Quando há várias ações em sequência, é necessário utilizar `do` para encadeá-las; sem o `do`, o compilador não tem como saber que se trata de ações sequenciais.
+
+```haskell
+main :: IO ()
+main = do
+  putStrLn "=== Cafe Leblanc ==="
+  print (valorTotalPedido pedido1)
+  print (valorTotalPedido pedido2)
+```
+
+Para combinar texto e valor numérico em uma mesma linha, converta o número para `String` com `show` e concatene com `++`:
+
+```haskell
+main :: IO ()
+main = do
+  let total1 = valorTotalPedido pedido1
+  let total2 = valorTotalPedido pedido2
+  putStrLn ("Total do pedido 1: R$ " ++ show total1)
+  putStrLn ("Total do pedido 2: R$ " ++ show total2)
+```
+
+Referência rápida:
+
+| Funcao | O que faz |
+|---|---|
+| putStrLn | imprime String com quebra de linha |
+| print | converte com show e imprime (bom pra debug) |
+| show | converte qualquer valor em String |
+| ++ | concatena duas Strings |
+| let dentro do do | define valor local sem IO |
+
+O `do` é açúcar sintático para encadear ações IO em sequência. O Haskell garante, por meio do sistema de tipos, que código puro nunca se mistura com IO de forma acidental.
+
+#### O que eu achei
+
+Como ajudou: a tabela de referencia rapida com putStrLn, print, show e ++ foi exatamente o que tava faltando. A explicacao de que do e "acucar sintatico pra encadear acoes IO" ajudou a entender sem precisar mergulhar em Monads ainda.
+
+Solucionou a duvida: sim. O padrao let total = ... seguido de putStrLn (... ++ show total) foi reutilizado na main dos 4 exercicios sem dificuldade.
+
+O que aprendi: do e necessario pra sequenciar IO, show converte qualquer valor pra String, e codigo puro e IO sao separados pelo sistema de tipos em Haskell. Apliquei isso em todas as funcoes main dos exercicios 1 a 4.
+
+---
+
+## 3. Relatorio de Satisfacao e Aprendizado
+
+### 3.1 Visao Geral
+
+Nas 6 interacoes, o modelo foi bom em identificar o erro conceitual especifico - na maioria das vezes era eu trazendo habitos do Python pra um lugar onde nao funcionam. Em vez de so corrigir o codigo, a IA explicava o porque antes do como, o que foi o diferencial.
+
+A estrategia de mostrar meu codigo errado ao lado do correto foi o recurso que mais ajudou. Nunca recebi uma solucao pronta sem explicacao, sempre tinha contexto antes.
+
+---
+
+### 3.2 Pontos fortes
+
+Contexto cruzado entre exercicios: em dois prompts (4 e 5), a resposta adiantou exemplos de exercicios que eu ainda nao tinha chegado, o que economizou tempo e me deixou mais preparado.
+
+Analogias com Python: as comparacoes foram precisas e nao criaram confusao adicional, funcionaram mesmo como ponte conceitual.
+
+Progressao de complexidade: sempre veio a solucao minima primeiro e depois a versao mais idiomatica, respeitando a curva de aprendizado.
+
+---
+
+### 3.3 Limitacoes
+
+Algumas respostas trouxeram conceitos que eu nao pedi, como composicao com . e o where. Foram uteis mas poderiam ter ficado separados como "se quiser aprofundar" pra nao sobrecarregar quem ta comecando.
+
+A resposta sobre IO mencionou Monads de passagem sem explicar, o que gerou uma curiosidade que ficou em aberto - precisaria de um prompt a mais pra fechar esse assunto.
+
+
+---
+
+### 3.5 Avaliacao geral
+
+A experiencia foi muito boa. O principal diferencial foi a IA contextualizar os erros no paradigma funcional - nao so corrigir o codigo, mas explicar por que a mentalidade imperativa/OO gera os problemas e como a abordagem funcional elimina isso estruturalmente.
+
+Sai das 6 interacoes com dominio suficiente dos 6 pilares trabalhados pra resolver os 4 exercicios de forma independente, com estilo idiomatico em Haskell.
+
+---
+
+## 4. Conclusao
+
+Esse relatorio mostra que usar IA generativa como suporte ao aprendizado - com o aluno formulando duvidas especificas a partir de erros reais - funciona melhor do que so consultar documentacao passivamente.
+
+As 6 interacoes cobriram os conceitos centrais dos 4 exercicios: data, tipos soma, pattern matching, guards, funcoes de alta ordem (map, sum, filter) e IO. Com isso, consegui escrever codigo Haskell funcional, compilavel e idiomatico pra todos os cenarios - Cafe Leblanc, Lojas de Hyrule, Casa de Shows e Casa de Banhos da Yubaba.
+
+---
+
+Augusto Leite - Matricula 866 - Inatel - Junho de 2025
